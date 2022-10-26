@@ -1,5 +1,7 @@
 # Criar uma estrutura de CRUD para a classe Usuario
 
+> dotnet watch run --launch-profile hotreloadprofile
+
 - Cadastro
 - Edição
 - Exclusão
