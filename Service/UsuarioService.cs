@@ -3,6 +3,7 @@ using ExercicioAPIStella.Domain.Interfaces;
 using CpfLibrary;
 using ExercicioAPIStella.Data.Entities;
 using AutoMapper;
+using System.Linq.Expressions;
 
 namespace ExercicioAPIStella.Service
 {
@@ -15,6 +16,16 @@ namespace ExercicioAPIStella.Service
         {
             _usuarioRepository = usuarioRepository;
             _mapper = mapper;
+        }
+
+        public async Task CadastrarUsuario(List<UsuarioRequest> usuariosRequests)
+        {
+            foreach (var u in usuariosRequests)
+            {
+                IsValid(u);
+                var novoUsuario = _mapper.Map<Usuario>(u);
+                await _usuarioRepository.AddAsync(novoUsuario);
+            }
         }
 
         public async Task<UsuarioResponse> CadastrarUsuario(UsuarioRequest usuarioRequest)
@@ -37,24 +48,32 @@ namespace ExercicioAPIStella.Service
 
         public async Task<UsuarioResponse> EditarUsuario(int id, UsuarioRequest usuarioRequest)
         {
-            await IsValid(id, usuarioRequest);
-            var usuarioParaEditar = _mapper.Map<Usuario>(usuarioRequest);
-            await _usuarioRepository.EditAsync(usuarioParaEditar);
-            var usuarioEditado = _usuarioRepository.FindAsync(id);
+            var user = await IsValid(id, usuarioRequest);
+
+            user = _mapper.Map(usuarioRequest, user);
+
+            await _usuarioRepository.EditAsync(user);
+
+            var usuarioEditado = await _usuarioRepository.FindAsync(id);
+
             return _mapper.Map<UsuarioResponse>(usuarioEditado);
         }
 
         public async Task ExcluirUsuarioPorId(int id)
         {
-            await IsValid(id);
-            var usuarioParaDeletar = await _usuarioRepository.FindAsync(id);
+            var usuarioParaDeletar = await IsValid(id);
             await _usuarioRepository.RemoveAsync(usuarioParaDeletar);
+        }
+
+        public async Task<UsuarioResponse> GetUsuario(string name)
+        {
+            var user = await IsValid(name);
+            return _mapper.Map<UsuarioResponse>(user);
         }
 
         public async Task<UsuarioResponse> GetUsuarioPorId(int id)
         {
-            await IsValid(id);
-            var usuario = await _usuarioRepository.FindAsync(id);
+            var usuario = await IsValid(id);
             var usuarioResponse = _mapper.Map<UsuarioResponse>(usuario);
             return usuarioResponse;
         }
@@ -66,16 +85,27 @@ namespace ExercicioAPIStella.Service
             return usuariosResponse;
         }
 
-        private async Task IsValid(int id)
+        private async Task<Usuario> IsValid(string name)
         {
-            var user = await _usuarioRepository.FindAsync(id);
+            var user = await _usuarioRepository.FindAsync(name);
             if (user == null)
             {
                 throw new ArgumentException("Usuario não existe");
             }
+            return user;
         }
 
-        private async Task IsValid(int id, UsuarioRequest usuarioRequest)
+        private async Task<Usuario> IsValid(int id)
+        {
+            var user = await _usuarioRepository.FindAsync(id);
+            if (user == null)
+            {
+                throw new ArgumentException("Usuario não existe");
+            }
+            return user;
+        }
+
+        private async Task<Usuario> IsValid(int id, UsuarioRequest usuarioRequest)
         {
             var user = await _usuarioRepository.FindAsync(id);
             if (user == null)
@@ -83,22 +113,15 @@ namespace ExercicioAPIStella.Service
                 throw new ArgumentException("Usuario não existe");
             }
 
-            if (string.IsNullOrEmpty(usuarioRequest.Nome))
-            {
-                throw new ArgumentException("Nome precisa ser informado.");
-            }
             if (!Cpf.Check(usuarioRequest.CPF))
             {
                 throw new ArgumentException("CPF inválido.");
             }
+            return user;
         }
 
         private void IsValid(UsuarioRequest usuarioRequest)
         {
-            if (string.IsNullOrEmpty(usuarioRequest.Nome))
-            {
-                throw new ArgumentException("Nome precisa ser informado.");
-            }
             if (!Cpf.Check(usuarioRequest.CPF))
             {
                 throw new ArgumentException("CPF inválido.");

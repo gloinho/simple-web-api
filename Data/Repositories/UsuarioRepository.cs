@@ -33,19 +33,14 @@ namespace ExercicioAPIStella.Data.Repositories
             return await _context.Set<Usuario>().FirstOrDefaultAsync(u => u.UsuarioId == id);
         }
 
-        public async Task<Usuario> FindAsync(Expression<Func<Usuario, bool>> expression)
+        public async Task<Usuario> FindAsync(string name)
         {
-            return await _context.Set<Usuario>().FirstOrDefaultAsync(expression);
+            return await _context.Set<Usuario>().FirstOrDefaultAsync(u => u.Nome == name);
         }
 
         public async Task<List<Usuario>> ListAsync()
         {
             return await _context.Set<Usuario>().ToListAsync();
-        }
-
-        public async Task<List<Usuario>> ListAsync(Expression<Func<Usuario, bool>> expression)
-        {
-            return await _context.Set<Usuario>().Where(expression).ToListAsync();
         }
 
         public async Task RemoveAsync(Usuario item)

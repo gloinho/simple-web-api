@@ -9,8 +9,7 @@ namespace ExercicioAPIStella.Domain.Interfaces
         Task RemoveAsync(Usuario item);
         Task EditAsync(Usuario item);
         Task<Usuario> FindAsync(int id);
-        Task<Usuario> FindAsync(Expression<Func<Usuario, bool>> expression);
+        Task<Usuario> FindAsync(string name);
         Task<List<Usuario>> ListAsync();
-        Task<List<Usuario>> ListAsync(Expression<Func<Usuario, bool>> expression);
     }
 }
