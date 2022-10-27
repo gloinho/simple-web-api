@@ -11,3 +11,4 @@ global using Moq;
 global using AutoMapper;
 global using ExercicioAPIStella.Service;
 global using ExercicioAPIStella.CrossCutting.Profiles;
+global using ExercicioAPIStella.Domain.Contracts.Usuario;
