@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ExercicioAPIStella.Data.Entities;
+using ExercicioAPIStella.Domain.Entities;
 
 namespace ExercicioAPIStella.Data.Context
 {

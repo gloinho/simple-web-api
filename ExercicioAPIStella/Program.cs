@@ -1,5 +1,5 @@
 using ExercicioAPIStella.Data.Context;
-using ExercicioAPIStella.Domain.Profiles;
+using ExercicioAPIStella.CrossCutting.Profiles;
 using ExercicioAPIStella.IoC;
 using Microsoft.EntityFrameworkCore;
 

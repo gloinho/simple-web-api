@@ -1,4 +1,4 @@
-namespace ExercicioAPIStella.Data.Entities
+namespace ExercicioAPIStella.Domain.Entities
 {
     public class Usuario
     {

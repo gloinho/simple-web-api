@@ -1,4 +1,4 @@
-using ExercicioAPIStella.Data.Entities;
+using ExercicioAPIStella.Domain.Entities;
 using System.Linq.Expressions;
 
 namespace ExercicioAPIStella.Domain.Interfaces

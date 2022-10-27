@@ -1,7 +1,7 @@
 using ExercicioAPIStella.Domain.Contracts.Usuario;
 using ExercicioAPIStella.Domain.Interfaces;
 using CpfLibrary;
-using ExercicioAPIStella.Data.Entities;
+using ExercicioAPIStella.Domain.Entities;
 using AutoMapper;
 using System.Linq.Expressions;
 

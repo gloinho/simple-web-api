@@ -23,7 +23,7 @@ namespace ExercicioAPIStella.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ExercicioAPIStella.Data.Entities.Usuario", b =>
+            modelBuilder.Entity("ExercicioAPIStella.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("UsuarioId")
                         .ValueGeneratedOnAdd()

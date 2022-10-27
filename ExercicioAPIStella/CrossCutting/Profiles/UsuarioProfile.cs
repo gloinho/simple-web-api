@@ -1,8 +1,8 @@
 using AutoMapper;
-using ExercicioAPIStella.Data.Entities;
+using ExercicioAPIStella.Domain.Entities;
 using ExercicioAPIStella.Domain.Contracts.Usuario;
 
-namespace ExercicioAPIStella.Domain.Profiles
+namespace ExercicioAPIStella.CrossCutting.Profiles
 {
     public class UsuarioProfile : Profile
     {

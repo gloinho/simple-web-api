@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using ExercicioAPIStella.Data.Context;
-using ExercicioAPIStella.Data.Entities;
+using ExercicioAPIStella.Domain.Entities;
 using ExercicioAPIStella.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
