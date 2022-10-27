@@ -3,7 +3,6 @@ using ExercicioAPIStella.Domain.Interfaces;
 using CpfLibrary;
 using ExercicioAPIStella.Domain.Entities;
 using AutoMapper;
-using System.Linq.Expressions;
 
 namespace ExercicioAPIStella.Service
 {
@@ -18,29 +17,9 @@ namespace ExercicioAPIStella.Service
             _mapper = mapper;
         }
 
-        public async Task CadastrarUsuario(List<UsuarioRequest> usuariosRequests)
-        {
-            foreach (var u in usuariosRequests)
-            {
-                IsValid(u);
-                var novoUsuario = _mapper.Map<Usuario>(u);
-                await _usuarioRepository.AddAsync(novoUsuario);
-            }
-        }
-
         public async Task<UsuarioResponse> CadastrarUsuario(UsuarioRequest usuarioRequest)
         {
-            IsValid(usuarioRequest);
-            // PESQUISAR AUTOMAPPER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // var newUser = new Usuario()
-            // {
-            //     UsuarioId = usuarioRequest.UsuarioId,
-            //     CPF = usuarioRequest.CPF,
-            //     Email = usuarioRequest.Email,
-            //     Nome = usuarioRequest.Nome,
-            //     Senha = usuarioRequest.Senha,
-            //     Telefone = usuarioRequest.Telefone
-            // };
+            IsValidCpf(usuarioRequest.CPF);
             var novoUsuario = _mapper.Map<Usuario>(usuarioRequest);
             await _usuarioRepository.AddAsync(novoUsuario);
             return _mapper.Map<UsuarioResponse>(usuarioRequest);
@@ -48,32 +27,28 @@ namespace ExercicioAPIStella.Service
 
         public async Task<UsuarioResponse> EditarUsuario(int id, UsuarioRequest usuarioRequest)
         {
-            var user = await IsValid(id, usuarioRequest);
-
+            var user = await IsValidUser(id, usuarioRequest);
             user = _mapper.Map(usuarioRequest, user);
-
             await _usuarioRepository.EditAsync(user);
-
             var usuarioEditado = await _usuarioRepository.FindAsync(id);
-
             return _mapper.Map<UsuarioResponse>(usuarioEditado);
         }
 
         public async Task ExcluirUsuarioPorId(int id)
         {
-            var usuarioParaDeletar = await IsValid(id);
+            var usuarioParaDeletar = await IsValidProcurarPeloId(id);
             await _usuarioRepository.RemoveAsync(usuarioParaDeletar);
         }
 
         public async Task<UsuarioResponse> GetUsuario(string name)
         {
-            var user = await IsValid(name);
+            var user = await IsValidProcurarPeloNome(name);
             return _mapper.Map<UsuarioResponse>(user);
         }
 
         public async Task<UsuarioResponse> GetUsuarioPorId(int id)
         {
-            var usuario = await IsValid(id);
+            var usuario = await IsValidProcurarPeloId(id);
             var usuarioResponse = _mapper.Map<UsuarioResponse>(usuario);
             return usuarioResponse;
         }
@@ -85,44 +60,39 @@ namespace ExercicioAPIStella.Service
             return usuariosResponse;
         }
 
-        private async Task<Usuario> IsValid(string name)
+        private async Task<Usuario> IsValidProcurarPeloNome(string name)
         {
             var user = await _usuarioRepository.FindAsync(name);
-            if (user == null)
-            {
-                throw new ArgumentException("Usuario não existe");
-            }
+            IsNullUser(user);
             return user;
         }
 
-        private async Task<Usuario> IsValid(int id)
+        private async Task<Usuario> IsValidProcurarPeloId(int id)
         {
             var user = await _usuarioRepository.FindAsync(id);
-            if (user == null)
-            {
-                throw new ArgumentException("Usuario não existe");
-            }
+            IsNullUser(user);
             return user;
         }
 
-        private async Task<Usuario> IsValid(int id, UsuarioRequest usuarioRequest)
+        private async Task<Usuario> IsValidUser(int id, UsuarioRequest usuarioRequest)
         {
             var user = await _usuarioRepository.FindAsync(id);
+            IsNullUser(user);
+            IsValidCpf(usuarioRequest.CPF);
+            return user;
+        }
+
+        private void IsNullUser(Usuario user)
+        {
             if (user == null)
             {
                 throw new ArgumentException("Usuario não existe");
             }
-
-            if (!Cpf.Check(usuarioRequest.CPF))
-            {
-                throw new ArgumentException("CPF inválido.");
-            }
-            return user;
         }
 
-        private void IsValid(UsuarioRequest usuarioRequest)
+        private void IsValidCpf(string cpf)
         {
-            if (!Cpf.Check(usuarioRequest.CPF))
+            if (!Cpf.Check(cpf))
             {
                 throw new ArgumentException("CPF inválido.");
             }

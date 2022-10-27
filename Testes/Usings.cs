@@ -7,3 +7,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Bogus;
 global using Bogus.Extensions.Brazil;
 global using Microsoft.Extensions.DependencyInjection;
+global using Moq;
+global using AutoMapper;
+global using ExercicioAPIStella.Service;
+global using ExercicioAPIStella.CrossCutting.Profiles;

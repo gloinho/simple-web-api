@@ -4,7 +4,7 @@ namespace Testes.RepositoryTest
     public class UsuarioRepositoryTest
     {
         private static ApplicationDbContext _dbcontext;
-        private static IUsuarioRepository _usuarioRepository;
+        private static IUsuarioRepository _sut;
         private static Faker<Usuario> faker = new Faker<Usuario>()
             .RuleFor(prop => prop.CPF, cpf => cpf.Person.Cpf())
             .RuleFor(prop => prop.Email, email => email.Person.Email)
@@ -21,7 +21,7 @@ namespace Testes.RepositoryTest
                 options => options.UseInMemoryDatabase(databaseName: "dbtest")
             );
             ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-            _usuarioRepository = serviceProvider.GetRequiredService<IUsuarioRepository>();
+            _sut = serviceProvider.GetRequiredService<IUsuarioRepository>();
             _dbcontext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             _dbcontext.Database.EnsureCreated();
             if (await _dbcontext.Usuarios.CountAsync() <= 0)
@@ -46,7 +46,7 @@ namespace Testes.RepositoryTest
         public async Task TestAddAsync()
         {
             var user = faker.Generate();
-            await _usuarioRepository.AddAsync(user);
+            await _sut.AddAsync(user);
             var count = await _dbcontext.Usuarios.CountAsync();
             Assert.AreEqual(11, count);
         }
@@ -54,7 +54,7 @@ namespace Testes.RepositoryTest
         [TestMethod]
         public async Task TestFindAsync()
         {
-            var user = await _usuarioRepository.FindAsync(1);
+            var user = await _sut.FindAsync(1);
             Assert.IsNotNull(user);
         }
 
@@ -62,25 +62,25 @@ namespace Testes.RepositoryTest
         public async Task TestFindAsyncByName()
         {
             var user = faker.Generate();
-            await _usuarioRepository.AddAsync(user);
-            var usuarioEncontrado = await _usuarioRepository.FindAsync(user.Nome);
+            await _sut.AddAsync(user);
+            var usuarioEncontrado = await _sut.FindAsync(user.Nome);
             Assert.AreEqual(user, usuarioEncontrado);
         }
 
         [TestMethod]
         public async Task TestEditAsync()
         {
-            var user = await _usuarioRepository.FindAsync(1);
+            var user = await _sut.FindAsync(1);
             user.Nome = "Anastacio";
-            await _usuarioRepository.EditAsync(user);
-            var usuarioEditado = await _usuarioRepository.FindAsync(1);
+            await _sut.EditAsync(user);
+            var usuarioEditado = await _sut.FindAsync(1);
             Assert.AreEqual("Anastacio", usuarioEditado.Nome);
         }
 
         [TestMethod]
         public async Task TestListAsync()
         {
-            var users = await _usuarioRepository.ListAsync();
+            var users = await _sut.ListAsync();
             Assert.IsNotNull(users);
             Assert.AreEqual(12, users.Count);
         }
@@ -88,9 +88,9 @@ namespace Testes.RepositoryTest
         [TestMethod]
         public async Task TestRemoveAsync()
         {
-            var user = await _usuarioRepository.FindAsync(1);
-            await _usuarioRepository.RemoveAsync(user);
-            Assert.IsNull(await _usuarioRepository.FindAsync(1));
+            var user = await _sut.FindAsync(1);
+            await _sut.RemoveAsync(user);
+            Assert.IsNull(await _sut.FindAsync(1));
         }
     }
 }

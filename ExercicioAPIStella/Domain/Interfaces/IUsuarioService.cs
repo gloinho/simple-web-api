@@ -10,7 +10,6 @@ namespace ExercicioAPIStella.Domain.Interfaces
     public interface IUsuarioService
     {
         Task<UsuarioResponse> CadastrarUsuario(UsuarioRequest usuarioRequest);
-        Task CadastrarUsuario(List<UsuarioRequest> usuarioRequests);
         Task<UsuarioResponse> GetUsuarioPorId(int id);
         Task<UsuarioResponse> GetUsuario(string name);
         Task<List<UsuarioResponse>> GetUsuarios();
